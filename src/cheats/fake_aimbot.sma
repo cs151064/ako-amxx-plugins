@@ -14,7 +14,6 @@ enum
 
 new bool:g_enabled[MAX_PLAYERS + 1];
 new bool:g_firePrimed[MAX_PLAYERS + 1];
-new bool:g_autoFire[MAX_PLAYERS + 1];
 new g_mode[MAX_PLAYERS + 1];
 new g_maxPlayers;
 
@@ -57,15 +56,12 @@ public plugin_natives()
     register_native("fake_aimbot_toggle", "native_aimbot_toggle", 1);
     register_native("fake_aimbot_get_mode", "native_aimbot_get_mode", 1);
     register_native("fake_aimbot_toggle_mode", "native_aimbot_toggle_mode", 1);
-    register_native("fake_aimbot_get_autofire", "native_aimbot_get_autofire", 1);
-    register_native("fake_aimbot_toggle_autofire", "native_aimbot_toggle_autofire", 1);
 }
 
 public client_disconnect(id)
 {
     g_enabled[id] = false;
     g_firePrimed[id] = false;
-    g_autoFire[id] = false;
     g_mode[id] = AIM_MODE_FIRE;
 }
 
@@ -117,26 +113,6 @@ public native_aimbot_toggle_mode(id)
     return g_mode[id];
 }
 
-public bool:native_aimbot_get_autofire(id)
-{
-    if (!is_valid_player_index(id)) {
-        return false;
-    }
-
-    return g_autoFire[id];
-}
-
-public bool:native_aimbot_toggle_autofire(id)
-{
-    if (!is_valid_player_index(id)) {
-        return false;
-    }
-
-    g_autoFire[id] = !g_autoFire[id];
-    g_firePrimed[id] = false;
-    return g_autoFire[id];
-}
-
 public fw_CmdStart(id, ucHandle)
 {
     if (!get_pcvar_num(g_cvarEnabled) || !g_enabled[id] || !is_user_alive(id)) {
@@ -146,7 +122,7 @@ public fw_CmdStart(id, ucHandle)
 
     new buttons = get_uc(ucHandle, UC_Buttons);
 
-    if (!g_autoFire[id] && g_mode[id] == AIM_MODE_FIRE) {
+    if (g_mode[id] == AIM_MODE_FIRE) {
         if (!(buttons & IN_ATTACK)) {
             g_firePrimed[id] = false;
             return FMRES_IGNORED;
@@ -173,12 +149,6 @@ public fw_CmdStart(id, ucHandle)
     apply_visible_aim(id, ucHandle, angles);
     set_pev(id, pev_punchangle, punch);
 
-    if (g_autoFire[id]) {
-        click_attack(id, ucHandle, buttons);
-        g_firePrimed[id] = true;
-        return FMRES_HANDLED;
-    }
-
     if (g_mode[id] == AIM_MODE_FIRE && get_pcvar_num(g_cvarPrefireLock) && !g_firePrimed[id]) {
         buttons &= ~IN_ATTACK;
         set_uc(ucHandle, UC_Buttons, buttons);
@@ -190,17 +160,6 @@ public fw_CmdStart(id, ucHandle)
     g_firePrimed[id] = true;
 
     return FMRES_HANDLED;
-}
-
-click_attack(id, ucHandle, buttons)
-{
-    new oldButtons = pev(id, pev_oldbuttons);
-    oldButtons &= ~IN_ATTACK;
-    set_pev(id, pev_oldbuttons, oldButtons);
-
-    buttons |= IN_ATTACK;
-    set_uc(ucHandle, UC_Buttons, buttons);
-    set_pev(id, pev_button, buttons);
 }
 
 public fw_PlayerTraceAttack(victim, attacker, Float:damage, Float:direction[3], tracehandle, damage_type)

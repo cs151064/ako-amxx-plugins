@@ -4,8 +4,6 @@ native bool:fake_aimbot_get(id);
 native bool:fake_aimbot_toggle(id);
 native fake_aimbot_get_mode(id);
 native fake_aimbot_toggle_mode(id);
-native bool:fake_aimbot_get_autofire(id);
-native bool:fake_aimbot_toggle_autofire(id);
 native bool:magic_circle_get(id);
 native bool:magic_circle_toggle(id);
 
@@ -33,7 +31,6 @@ enum
 {
     B1 = 1 << N1,
     B2 = 1 << N2,
-    B3 = 1 << N3,
     B0 = 1 << N0
 };
 
@@ -41,11 +38,11 @@ new g_mainKeys;
 new g_aimbotKeys;
 
 new g_mainBody[384];
-new g_aimbotBody[384];
+new g_aimbotBody[256];
 
 public plugin_init()
 {
-    register_plugin("special_menu", "0.3.0", "Ako");
+    register_plugin("special_menu", "0.4.0", "Ako");
 
     register_clcmd("/special", "cmd_special_menu");
     register_clcmd("special", "cmd_special_menu");
@@ -70,10 +67,9 @@ create_menu_templates()
     size = sizeof(g_aimbotBody);
     add(g_aimbotBody, size, "\y仿 Aimbot 設定^n^n");
     add(g_aimbotBody, size, "\r1. \w狀態: %s^n");
-    add(g_aimbotBody, size, "\r2. \w射擊模式: \y%s^n");
-    add(g_aimbotBody, size, "\r3. \w鎖定模式: \y%s^n");
+    add(g_aimbotBody, size, "\r2. \w鎖定模式: \y%s^n");
     add(g_aimbotBody, size, "^n\r0. \w返回");
-    g_aimbotKeys = B1 | B2 | B3 | B0;
+    g_aimbotKeys = B1 | B2 | B0;
 }
 
 public cmd_special_menu(id)
@@ -100,14 +96,13 @@ show_main_menu(id)
 
 show_aimbot_menu(id)
 {
-    new menu[384];
-    new enabled[16], fireMode[16], aimMode[32];
+    new menu[256];
+    new enabled[16], aimMode[32];
 
     copy(enabled, charsmax(enabled), fake_aimbot_get(id) ? "\y開啟" : "\r關閉");
-    copy(fireMode, charsmax(fireMode), fake_aimbot_get_autofire(id) ? "自動" : "手動");
     copy(aimMode, charsmax(aimMode), fake_aimbot_get_mode(id) == AIM_MODE_FIRE ? "開火時" : "持續鎖定");
 
-    formatex(menu, charsmax(menu), g_aimbotBody, enabled, fireMode, aimMode);
+    formatex(menu, charsmax(menu), g_aimbotBody, enabled, aimMode);
     show_menu(id, g_aimbotKeys, menu, -1, "special_aimbot_menu");
 }
 
@@ -133,10 +128,6 @@ public handle_aimbot_menu(id, key)
             show_aimbot_menu(id);
         }
         case N2: {
-            fake_aimbot_toggle_autofire(id);
-            show_aimbot_menu(id);
-        }
-        case N3: {
             fake_aimbot_toggle_mode(id);
             show_aimbot_menu(id);
         }
