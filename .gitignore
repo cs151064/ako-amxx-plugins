@@ -1,0 +1,50 @@
+# AMXX build/package output
+/dist/
+/packages/*
+!/packages/.gitkeep
+
+# Temporary/vendor downloads and extracted staging files
+/.tmp/
+/.downloads/
+
+# Docker runtime/server data, if accidentally generated again.
+# Keep docker-compose.yml and docker/nginx/default.conf tracked for FastDL.
+/docker/data/
+/docker/rehlds/
+
+# Local notes and editor/system noise
+/.vscode/
+/SESSION_GUIDE.md
+*.log
+*.tmp
+*.bak
+*.bak_*
+Thumbs.db
+Desktop.ini
+
+# Visual Studio/user-local files
+*.suo
+*.user
+*.userosscache
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+*.ipch
+/.vs/
+**/Debug/
+**/Release/
+**/x64/
+**/x86/
+
+# Local/third-party client hack references and binaries
+/101xD*
+/101xD*/
+/101xD 2017_[unknowncheats.me]_/
+/101xD 2017_[unknowncheats.me]_.rar
+/kHack.dll
+/kHack_Settings.cfg
+/指令.txt
+
+# Game FastDL compressed cache files
+*.ztmp
