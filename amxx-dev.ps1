@@ -57,7 +57,14 @@ function Get-SourceFiles {
             Sort-Object FullName
     }
 
-    if ($Plugin.Count -eq 0) {
+    $requestedPlugins = @(
+        $Plugin |
+            ForEach-Object { $_ -split ',' } |
+            ForEach-Object { $_.Trim() } |
+            Where-Object { $_ -ne '' }
+    )
+
+    if ($requestedPlugins.Count -eq 0) {
         return @($all)
     }
 
@@ -67,7 +74,7 @@ function Get-SourceFiles {
     }
 
     $selected = @()
-    foreach ($name in $Plugin) {
+    foreach ($name in $requestedPlugins) {
         $key = Get-PluginKey $name
         if (-not $byName.ContainsKey($key)) {
             throw "Source plugin not found in src: $name"
