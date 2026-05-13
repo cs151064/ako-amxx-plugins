@@ -174,9 +174,7 @@ public fw_CmdStart(id, ucHandle)
     set_pev(id, pev_punchangle, punch);
 
     if (g_autoFire[id]) {
-        buttons |= IN_ATTACK;
-        set_uc(ucHandle, UC_Buttons, buttons);
-        set_pev(id, pev_button, buttons);
+        click_attack(id, ucHandle, buttons);
         g_firePrimed[id] = true;
         return FMRES_HANDLED;
     }
@@ -192,6 +190,17 @@ public fw_CmdStart(id, ucHandle)
     g_firePrimed[id] = true;
 
     return FMRES_HANDLED;
+}
+
+click_attack(id, ucHandle, buttons)
+{
+    new oldButtons = pev(id, pev_oldbuttons);
+    oldButtons &= ~IN_ATTACK;
+    set_pev(id, pev_oldbuttons, oldButtons);
+
+    buttons |= IN_ATTACK;
+    set_uc(ucHandle, UC_Buttons, buttons);
+    set_pev(id, pev_button, buttons);
 }
 
 public fw_PlayerTraceAttack(victim, attacker, Float:damage, Float:direction[3], tracehandle, damage_type)
