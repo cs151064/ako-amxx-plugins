@@ -60,7 +60,6 @@ create_menu_templates()
     add(g_mainBody, size, "\y特殊功能選單^n^n");
     add(g_mainBody, size, "\r1. \w仿 Aimbot: %s^n");
     add(g_mainBody, size, "\r2. \w魔法陣: %s^n");
-    add(g_mainBody, size, "^n\d魔法陣開啟後，瞄準地面按 E 施放。^n");
     add(g_mainBody, size, "^n\r0. \w離開");
     g_mainKeys = B1 | B2 | B0;
 

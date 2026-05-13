@@ -190,7 +190,6 @@ give_laser_cannon(id)
     apply_models(id);
 
     emit_sound(id, CHAN_ITEM, DRAW_SOUND, 1.0, ATTN_NORM, 0, PITCH_NORM);
-    client_print(id, print_chat, "[laser_cannon] Plasma Laser Cannon equipped. Ammo: %d", cs_get_user_bpammo(id, WEAPON_CSW));
 }
 
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)

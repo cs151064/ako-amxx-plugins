@@ -165,7 +165,6 @@ public native_toggle(id)
 magic_circle_toggle_player(id)
 {
     g_enabled[id] = !g_enabled[id];
-    client_print(id, print_chat, "[magic_circle] %s", g_enabled[id] ? "Enabled" : "Disabled");
     return g_enabled[id];
 }
 
