@@ -6,11 +6,7 @@
 # Temporary/vendor downloads and extracted staging files
 /.tmp/
 /.downloads/
-/third_party/downloads/
-/third_party/**/*.amxx
-/third_party/**/*.zip
-/third_party/**/*.7z
-/third_party/**/*.rar
+/third_party/
 
 # Docker runtime/server data, if accidentally generated again.
 # Keep docker-compose.yml and docker/nginx/default.conf tracked for FastDL.
