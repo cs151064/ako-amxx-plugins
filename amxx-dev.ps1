@@ -6,6 +6,7 @@ param(
 
     [switch]$Debug,
     [switch]$NoPluginsIni,
+    [switch]$ThirdParty,
 
     [string]$ServerRoot = 'D:\CounterStrike\hlds'
 )
@@ -22,17 +23,33 @@ $ServerIncludeDir = Join-Path $AmxxDir 'scripting\include'
 $ServerPluginsDir = Join-Path $AmxxDir 'plugins'
 $PluginsIni = Join-Path $AmxxDir 'configs\plugins.ini'
 
-$SrcDir = Join-Path $WorkspaceRoot 'src'
-$DistPluginsDir = Join-Path $WorkspaceRoot 'dist\plugins'
+$FirstPartySrcDir = Join-Path $WorkspaceRoot 'src'
+$FirstPartyDistPluginsDir = Join-Path $WorkspaceRoot 'dist\plugins'
+$FirstPartyManifest = Join-Path $WorkspaceRoot 'config\plugins.local.ini'
+
+$ThirdPartyRoot = Join-Path $WorkspaceRoot 'third_party'
+$ThirdPartySrcDir = Join-Path $ThirdPartyRoot 'src'
+$ThirdPartyIncludeDir = Join-Path $ThirdPartyRoot 'include'
+$ThirdPartyDistPluginsDir = Join-Path $WorkspaceRoot 'dist\third_party'
+$ThirdPartyManifest = Join-Path $ThirdPartyRoot 'plugins.local.ini'
+
 $PackageDir = Join-Path $WorkspaceRoot 'packages'
-$Manifest = Join-Path $WorkspaceRoot 'config\plugins.local.ini'
 
-$ResourceRoots = @(
-    'model'
-)
+$SrcDir = if ($ThirdParty) { $ThirdPartySrcDir } else { $FirstPartySrcDir }
+$DistPluginsDir = if ($ThirdParty) { $ThirdPartyDistPluginsDir } else { $FirstPartyDistPluginsDir }
+$Manifest = if ($ThirdParty) { $ThirdPartyManifest } else { $FirstPartyManifest }
+$SourceLabel = if ($ThirdParty) { 'third_party/src' } else { 'src' }
+$PackagePrefix = if ($ThirdParty) { 'third_party_amxx' } else { 'ako_amxx' }
 
-$BlockStart = '; >>> ako managed plugins'
-$BlockEnd = '; <<< ako managed plugins'
+$ResourceRoots = if ($ThirdParty) {
+    @('third_party\resources')
+}
+else {
+    @('model')
+}
+
+$BlockStart = if ($ThirdParty) { '; >>> third_party managed plugins' } else { '; >>> ako managed plugins' }
+$BlockEnd = if ($ThirdParty) { '; <<< third_party managed plugins' } else { '; <<< ako managed plugins' }
 
 function Assert-PathExists {
     param([string]$Path, [string]$Label)
@@ -77,7 +94,7 @@ function Get-SourceFiles {
     foreach ($name in $requestedPlugins) {
         $key = Get-PluginKey $name
         if (-not $byName.ContainsKey($key)) {
-            throw "Source plugin not found in src: $name"
+            throw "Source plugin not found in $($SourceLabel): $name"
         }
         $selected += $byName[$key]
     }
@@ -93,7 +110,7 @@ function Invoke-Build {
 
     $sources = @(Get-SourceFiles)
     if ($sources.Count -eq 0) {
-        Write-Host 'No .sma files found under src. Nothing to build.'
+        Write-Host "No .sma files found under $SourceLabel. Nothing to build."
         return @()
     }
 
@@ -107,6 +124,14 @@ function Invoke-Build {
             "-i$ServerIncludeDir",
             "-o$outFile"
         )
+        if ($ThirdParty -and (Test-Path -LiteralPath $ThirdPartyIncludeDir)) {
+            $args = @(
+                $source.FullName,
+                "-i$ServerIncludeDir",
+                "-i$ThirdPartyIncludeDir",
+                "-o$outFile"
+            )
+        }
 
         $output = & $Compiler @args 2>&1
         $exitCode = $LASTEXITCODE
@@ -242,7 +267,7 @@ function Invoke-Package {
     }
 
     $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-    $root = Join-Path $PackageDir "ako_amxx_$stamp"
+    $root = Join-Path $PackageDir "$($PackagePrefix)_$stamp"
     $pkgModDir = Join-Path $root $ModName
     $pkgPlugins = Join-Path $root "$ModName\addons\amxmodx\plugins"
 
