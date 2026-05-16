@@ -151,7 +151,7 @@ public fw_PrecacheEvent_Post(type, const name[])
     }
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
     g_hasCannon[id] = false;
 }

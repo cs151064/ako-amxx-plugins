@@ -58,7 +58,7 @@ public plugin_natives()
     register_native("fake_aimbot_toggle_mode", "native_aimbot_toggle_mode", 1);
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
     g_enabled[id] = false;
     g_firePrimed[id] = false;

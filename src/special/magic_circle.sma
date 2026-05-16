@@ -67,7 +67,7 @@ public client_putinserver(id)
     g_hasFreezeGlow[id] = false;
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
     g_enabled[id] = false;
     g_hasFreezeGlow[id] = false;
