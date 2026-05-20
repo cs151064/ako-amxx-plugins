@@ -81,6 +81,8 @@ struct skilldata_t
 	float zombieHealth;
 	float hutaoHealth;
 	float hutaoDmgKnife;
+	float hutaoDmgHeavy;
+	float hutaoDmgFlame;
 	float zombieDmgOneSlash;
 	float zombieDmgBothSlash;
 

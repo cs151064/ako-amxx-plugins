@@ -69,6 +69,8 @@ skill_cfg_t skill_cfg[] = {
    {"sk_zombie_health", &gSkillData.zombieHealth},
    {"sk_hutao_health", &gSkillData.hutaoHealth},
    {"sk_hutao_dmg_knife", &gSkillData.hutaoDmgKnife},
+   {"sk_hutao_dmg_heavy", &gSkillData.hutaoDmgHeavy},
+   {"sk_hutao_dmg_flame", &gSkillData.hutaoDmgFlame},
    {"sk_zombie_dmg_one_slash", &gSkillData.zombieDmgOneSlash},
    {"sk_zombie_dmg_both_slash", &gSkillData.zombieDmgBothSlash},
    {"sk_turret_health", &gSkillData.turretHealth},
@@ -240,6 +242,8 @@ void monster_skill_init(void)
 	gSkillData.zombieHealth = 50.0f;
 	gSkillData.hutaoHealth = 150.0f;
 	gSkillData.hutaoDmgKnife = 35.0f;
+	gSkillData.hutaoDmgHeavy = 45.0f;
+	gSkillData.hutaoDmgFlame = 4.0f;
 	gSkillData.zombieDmgOneSlash = 20.0f;
 	gSkillData.zombieDmgBothSlash = 40.0f;
 	

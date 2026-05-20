@@ -283,6 +283,8 @@ void Remove_Entity(edict_t *pEdict)
 	{
 		if (monsters[index].monster_pent == pEdict)
 		{
+			if (monsters[index].respawn_enabled)
+				ScheduleMonsterRespawn(pEdict);
 			FreeMonsterIndex(index);
 			break;
 		}
@@ -636,11 +638,11 @@ void check_monster_info( edict_t *pPlayer )
 					if ( FClassnameIs( tr.pHit, "monster_hutao" ) && pMonster != NULL )
 					{
 						CMHutao *pHutao = (CMHutao *)pMonster;
-						sprintf(szInfo, "%s:  %s\n\xA6\xE5\xB6\x71:  %.0f\nSP:    %.0f / %.0f\n\xAD\x40\xA4\x4F:  %.0f / %.0f\n", ( isAlly ? "\xA4\xCD\xA4\xE8" : "\xBC\xC4\xA4\x48" ), szName, monsterHealth, pHutao->m_flSP, pHutao->m_flMaxSP, pHutao->m_flStamina, pHutao->m_flMaxStamina );
+						sprintf(szInfo, "%s:  %s\nHP:    %.0f\nSP:    %.0f / %.0f\nSTA:   %.0f / %.0f\n", ( isAlly ? "Ally" : "Enemy" ), szName, monsterHealth, pHutao->m_flSP, pHutao->m_flMaxSP, pHutao->m_flStamina, pHutao->m_flMaxStamina );
 					}
 					else
 					{
-						sprintf(szInfo, "%s:  %s\n\xA6\xE5\xB6\x71:  %.0f\n", ( isAlly ? "\xA4\xCD\xA4\xE8" : "\xBC\xC4\xA4\x48" ), szName, monsterHealth );
+						sprintf(szInfo, "%s:  %s\nHP:    %.0f\n", ( isAlly ? "Ally" : "Enemy" ), szName, monsterHealth );
 					}
 
 					// Create a TE_TEXTMESSAGE and show the monster information

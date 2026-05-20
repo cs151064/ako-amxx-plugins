@@ -423,20 +423,30 @@ public:
 	BOOL CheckMeleeAttack1( float flDot, float flDist );
 	int TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, int bitsDamageType );
 	void Killed( entvars_t *pevAttacker, int iGib );
+	void BecomeDead( void );
 	BOOL ShouldFadeOnDeath( void ) { return TRUE; }
 	void IdleSound( void );
 	void PainSound( void );
 	void DeathSound( void );
+	void RemoveDeadBody( void );
 	void PrescheduleThink( void );
 	void DashTowardEnemy( void );
+	void TryHeavyAttack( void );
+	void StartHeavyAttack( const Vector &vecDir );
+	void UpdateHeavyAttack( void );
+	void DamageHeavyAttackTargets( const Vector &vecCenter );
 	void KnifeAttack( void );
 	void UpdateSprint( void );
 	void AddSP( float amount );
+	void ClearSkillStateOnDeath( void );
 
 	float m_flNextDash;
 	float m_flNextIdleSound;
 	float m_flNextPainSound;
 	float m_flVoiceBusyUntil;
+	float m_flNextHeavyAttack;
+	float m_flHeavyAttackUntil;
+	float m_flNextHeavyFlame;
 	float m_flSP;
 	float m_flMaxSP;
 	float m_flStamina;
@@ -446,8 +456,14 @@ public:
 	float m_flNextSprintSound;
 	float m_flLastThinkTime;
 	float m_flLastDamage;
+	float m_flDeadCleanupTime;
+	Vector m_vecHeavyAttackDir;
+	Vector m_vecHeavyLastOrigin;
+	EHANDLE m_hHeavyHitTargets[16];
+	int m_iHeavyHitCount;
 	BOOL m_fDeathSoundPlayed;
 	BOOL m_fSprinting;
+	BOOL m_fHeavyAttacking;
 };
 
 
