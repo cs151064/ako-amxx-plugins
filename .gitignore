@@ -1,5 +1,6 @@
 # AMXX build/package output
 /dist/
+/build/
 /packages/*
 !/packages/.gitkeep
 
